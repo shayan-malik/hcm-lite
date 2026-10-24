@@ -35,7 +35,7 @@ const getEmployeesInRange = async ({ from, to, departmentId }) => {
   return result.rows;
 };
 
-const headcountAt = async (date, departmentId) => {
+export const headcountAt = async (date, departmentId) => {
   const values = [date];
   let dept = '';
   if (departmentId) {

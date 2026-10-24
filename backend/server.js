@@ -11,6 +11,7 @@ import leaveRoutes from './routes/leave.js';
 import payrollRoutes from './routes/payroll.js';
 import dashboardRoutes from './routes/dashboard.js';
 import commsRoutes from './routes/comms.js';
+import aiRoutes from './routes/ai.js';
 
 
 const app = express();
@@ -36,7 +37,7 @@ app.use('/api/leave', leaveRoutes);
 app.use('/api/payroll', payrollRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/comms', commsRoutes);
-
+app.use('/api/ai', aiRoutes);
 
 const PORT = process.env.PORT || 5000;
 
