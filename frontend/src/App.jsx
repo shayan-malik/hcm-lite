@@ -21,6 +21,7 @@ import Profile from "./pages/Profile";
 import Announcements from "./pages/Announcements";
 import Notifications from "./pages/Notifications";
 import AuditLog from "./pages/AuditLog";
+import Assistant from './pages/Assistant';
 
 function Protected({ children }) {
   const { user } = useAuth();
@@ -47,6 +48,7 @@ function AppRoutes() {
     "/announcements": <Announcements />,
     "/notifications": <Notifications />,
     "/audit": <AuditLog />,
+    '/assistant': <Assistant />,
   };
 
   return (

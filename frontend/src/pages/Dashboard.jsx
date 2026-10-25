@@ -38,6 +38,8 @@ function StaffDashboard({ role }) {
   const [data, setData] = useState(null);
   const [announcements, setAnnouncements] = useState([]);
   const [error, setError] = useState('');
+  const [summary, setSummary] = useState('');
+  const [summarizing, setSummarizing] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -75,6 +77,23 @@ function StaffDashboard({ role }) {
 
   const set = (name) => (e) => setFilters({ ...filters, [name]: e.target.value });
 
+  const summarize = async () => {
+  setSummarizing(true);
+  setSummary('');
+  try {
+    const { data } = await api.post('/ai/summary', {
+      from: filters.from || undefined,
+      to: filters.to || undefined,
+      department_id: filters.department_id || undefined,
+    });
+    setSummary(`${data.summary}\n\n(${data.label})`);
+  } catch (err) {
+    setError(err.response?.data?.error || 'Summary unavailable');
+  } finally {
+    setSummarizing(false);
+  }
+};
+
   return (
     <div>
       <h1>{role === 'admin' ? 'Company dashboard' : 'HR dashboard'}</h1>
@@ -89,6 +108,11 @@ function StaffDashboard({ role }) {
             <option key={d.id} value={d.id}>{d.name}</option>
           ))}
         </select>
+        <button onClick={summarize} disabled={summarizing}>
+  {summarizing ? 'Summarizing...' : 'Summarize'}
+</button>
+
+{summary && <div className="summary-box">{summary}</div>}
       </div>
 
       {role === 'hr' ? <HrView data={data} /> : <AdminView data={data} />}

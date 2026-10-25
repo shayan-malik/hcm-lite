@@ -9,6 +9,7 @@ const menus = {
     { path: '/users', label: 'Users' },
     { path: '/announcements', label: 'Announcements' },
     { path: '/notifications', label: 'Notifications' },
+    { path: '/assistant', label: 'AI Assistant' },
     { path: '/audit', label: 'Audit Log' },
   ],
   hr: [
@@ -19,6 +20,7 @@ const menus = {
     { path: '/payroll', label: 'Payroll' },
     { path: '/announcements', label: 'Announcements' },
     { path: '/notifications', label: 'Notifications' },
+    { path: '/assistant', label: 'AI Assistant' },
   ],
   employee: [
     { path: '/', label: 'Dashboard' },
@@ -28,6 +30,7 @@ const menus = {
     { path: '/profile', label: 'Profile' },
     { path: '/announcements', label: 'Announcements' },
     { path: '/notifications', label: 'Notifications' },
+    { path: '/assistant', label: 'AI Assistant' },
   ],
 };
 
