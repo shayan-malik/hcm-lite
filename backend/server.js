@@ -12,12 +12,12 @@ import payrollRoutes from './routes/payroll.js';
 import dashboardRoutes from './routes/dashboard.js';
 import commsRoutes from './routes/comms.js';
 import aiRoutes from './routes/ai.js';
+import employeeCsvRoutes from './routes/employeeCsv.js';
 
 
 const app = express();
 app.use(cors());
-app.use(express.json());
-
+app.use(express.json({ limit: '1mb' }));
 
 app.get('/health', async (req, res) => {
   try {
@@ -31,13 +31,14 @@ app.get('/health', async (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/org', orgRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/employees', employeeRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/leave', leaveRoutes);
 app.use('/api/payroll', payrollRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/comms', commsRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/employees', employeeCsvRoutes);   // pehle ye
+app.use('/api/employees', employeeRoutes);
 
 const PORT = process.env.PORT || 5000;
 
