@@ -74,7 +74,7 @@ function SettingsTab() {
   if (!form) return <p>{error || 'Loading...'}</p>;
 
   return (
-    <form className="panel" onSubmit={handleSubmit} style={{ maxWidth: 480 }}>
+    <form className="panel stack" onSubmit={handleSubmit} style={{ maxWidth: 480 }}>
       <h3>Company settings</h3>
       <label>Company name</label>
       <input name="company_name" value={form.company_name || ''} onChange={handleChange} />

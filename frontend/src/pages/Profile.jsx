@@ -43,7 +43,7 @@ export default function Profile() {
         <p>Department: {profile.department || '-'} | Designation: {profile.designation || '-'}</p>
         <p>Joined: {String(profile.join_date).slice(0, 10)} | Status: {profile.status}</p>
       </div>
-      <form className="panel" onSubmit={save} style={{ maxWidth: 480 }}>
+      <form className="panel stack" onSubmit={save} style={{ maxWidth: 480 }}>
         <h3>Edit contact details</h3>
         <label>Phone</label>
         <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />

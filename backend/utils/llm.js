@@ -22,8 +22,9 @@ export const callLLM = async ({ messages, tools, json = false }) => {
   });
 
   if (!response.ok) {
-    throw new Error(`AI provider error ${response.status}`);
-  }
+  const detail = (await response.text().catch(() => '')).slice(0, 300);
+  throw new Error(`AI provider error ${response.status}: ${detail}`);
+}
 
   const data = await response.json();
   return data.choices[0].message;
