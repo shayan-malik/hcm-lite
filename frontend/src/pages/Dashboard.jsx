@@ -1,19 +1,31 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from "react";
 import {
-  Bar, BarChart, CartesianGrid, Legend, Line, LineChart, Pie, PieChart, Cell,
-  ResponsiveContainer, Tooltip, XAxis, YAxis,
-} from 'recharts';
-import api from '../api';
-import { useAuth } from '../authContextValue';
-import KpiCard from '../components/KpiCard';
-import Table from '../components/Table';
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import api from "../api";
+import { useAuth } from "../authContextValue";
+import KpiCard from "../components/KpiCard";
+import Table from "../components/Table";
 
-const COLORS = ['#0f9d8a', '#5b4fcf', '#f59e0b', '#dc2626', '#0ea5e9'];
-const money = (n) => Number(n || 0).toLocaleString(undefined, { maximumFractionDigits: 0 });
+const COLORS = ["#0f9d8a", "#5b4fcf", "#f59e0b", "#dc2626", "#0ea5e9"];
+const money = (n) =>
+  Number(n || 0).toLocaleString(undefined, { maximumFractionDigits: 0 });
 
 export default function Dashboard() {
   const { user } = useAuth();
-  if (user.role === 'employee') return <EmployeeDashboard />;
+  if (user.role === "employee") return <EmployeeDashboard />;
   return <StaffDashboard role={user.role} />;
 }
 
@@ -33,12 +45,16 @@ function Announcements({ items }) {
 }
 
 function StaffDashboard({ role }) {
-  const [filters, setFilters] = useState({ from: '', to: '', department_id: '' });
+  const [filters, setFilters] = useState({
+    from: "",
+    to: "",
+    department_id: "",
+  });
   const [departments, setDepartments] = useState([]);
   const [data, setData] = useState(null);
   const [announcements, setAnnouncements] = useState([]);
-  const [error, setError] = useState('');
-  const [summary, setSummary] = useState('');
+  const [error, setError] = useState("");
+  const [summary, setSummary] = useState("");
   const [summarizing, setSummarizing] = useState(false);
 
   const load = useCallback(async () => {
@@ -50,9 +66,9 @@ function StaffDashboard({ role }) {
       };
       const { data } = await api.get(`/dashboard/${role}`, { params });
       setData(data);
-      setError('');
+      setError("");
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to load dashboard');
+      setError(err.response?.data?.error || "Failed to load dashboard");
     }
   }, [role, filters]);
 
@@ -63,59 +79,69 @@ function StaffDashboard({ role }) {
   useEffect(() => {
     const loadExtra = async () => {
       try {
-        const [d, a] = await Promise.all([api.get('/org/departments'), api.get('/comms/announcements')]);
+        const [d, a] = await Promise.all([
+          api.get("/org/departments"),
+          api.get("/comms/announcements"),
+        ]);
         setDepartments(d.data);
         setAnnouncements(a.data.slice(0, 3));
       } catch {
-        setError('Failed to load filters');
+        setError("Failed to load filters");
       }
     };
     loadExtra();
   }, []);
 
-  if (!data) return <p>{error || 'Loading...'}</p>;
+  if (!data) return <p>{error || "Loading..."}</p>;
 
-  const set = (name) => (e) => setFilters({ ...filters, [name]: e.target.value });
+  const set = (name) => (e) =>
+    setFilters({ ...filters, [name]: e.target.value });
 
   const summarize = async () => {
-  setSummarizing(true);
-  setSummary('');
-  try {
-    const { data } = await api.post('/ai/summary', {
-      from: filters.from || undefined,
-      to: filters.to || undefined,
-      department_id: filters.department_id || undefined,
-    });
-    setSummary(`${data.summary}\n\n(${data.label})`);
-  } catch (err) {
-    setError(err.response?.data?.error || 'Summary unavailable');
-  } finally {
-    setSummarizing(false);
-  }
-};
+    setSummarizing(true);
+    setSummary("");
+    try {
+      const { data } = await api.post("/ai/summary", {
+        from: filters.from || undefined,
+        to: filters.to || undefined,
+        department_id: filters.department_id || undefined,
+      });
+      setSummary(`${data.summary}\n\n(${data.label})`);
+    } catch (err) {
+      setError(err.response?.data?.error || "Summary unavailable");
+    } finally {
+      setSummarizing(false);
+    }
+  };
 
   return (
     <div>
-      <h1>{role === 'admin' ? 'Company dashboard' : 'HR dashboard'}</h1>
-      {error && <p className="error">{error}</p>}
-
       <div className="row">
-        <input type="date" value={filters.from} onChange={set('from')} title="From" />
-        <input type="date" value={filters.to} onChange={set('to')} title="To" />
-        <select value={filters.department_id} onChange={set('department_id')}>
+        <input
+          type="date"
+          value={filters.from}
+          onChange={set("from")}
+          title="From"
+        />
+        <input type="date" value={filters.to} onChange={set("to")} title="To" />
+        <select value={filters.department_id} onChange={set("department_id")}>
           <option value="">All departments</option>
           {departments.map((d) => (
-            <option key={d.id} value={d.id}>{d.name}</option>
+            <option key={d.id} value={d.id}>
+              {d.name}
+            </option>
           ))}
         </select>
         <button onClick={summarize} disabled={summarizing}>
-  {summarizing ? 'Summarizing...' : 'Summarize'}
-</button>
-
-{summary && <div className="summary-box">{summary}</div>}
+          {summarizing ? "Summarizing..." : "Summarize"}
+        </button>
       </div>
+      <h1>{role === "admin" ? "Company dashboard" : "HR dashboard"}</h1>
+      {error && <p className="error">{error}</p>}
 
-      {role === 'hr' ? <HrView data={data} /> : <AdminView data={data} />}
+      {summary && <div className="summary-box">{summary}</div>}
+
+      {role === "hr" ? <HrView data={data} /> : <AdminView data={data} />}
       <Announcements items={announcements} />
     </div>
   );
@@ -132,8 +158,16 @@ function HrView({ data }) {
         <KpiCard label="Present today" value={k.presentToday} />
         <KpiCard label="On leave today" value={k.onLeaveToday} />
         <KpiCard label="Late today" value={k.lateToday} />
-        <KpiCard label="Pending approvals" value={k.pendingApprovals} hint={`${k.pendingLeave} leave, ${k.pendingCorrections} corrections`} />
-        <KpiCard label="Attendance rate" value={`${att.summary.attendanceRate}%`} hint="for selected range" />
+        <KpiCard
+          label="Pending approvals"
+          value={k.pendingApprovals}
+          hint={`${k.pendingLeave} leave, ${k.pendingCorrections} corrections`}
+        />
+        <KpiCard
+          label="Attendance rate"
+          value={`${att.summary.attendanceRate}%`}
+          hint="for selected range"
+        />
         <KpiCard label="Late %" value={`${att.summary.latePercent}%`} />
       </div>
 
@@ -179,9 +213,9 @@ function HrView({ data }) {
       <h3>Top 5 late-comers</h3>
       <Table
         columns={[
-          { key: 'full_name', label: 'Employee' },
-          { key: 'department', label: 'Department' },
-          { key: 'lates', label: 'Late days' },
+          { key: "full_name", label: "Employee" },
+          { key: "department", label: "Department" },
+          { key: "lates", label: "Late days" },
         ]}
         rows={att.topLateComers.map((r) => ({ ...r, id: r.employee_id }))}
         empty="No late arrivals in this range"
@@ -197,10 +231,21 @@ function AdminView({ data }) {
     <div>
       <div className="kpis">
         <KpiCard label="Headcount" value={k.headcount} />
-        <KpiCard label="Attrition YTD" value={`${k.attritionYtdPercent}%`} hint={`${k.exitsYtd} exits`} />
-        <KpiCard label="Payroll cost (gross)" value={money(k.payrollCost.gross)} hint={k.payrollCost.month || 'No payroll yet'} />
+        <KpiCard
+          label="Attrition YTD"
+          value={`${k.attritionYtdPercent}%`}
+          hint={`${k.exitsYtd} exits`}
+        />
+        <KpiCard
+          label="Payroll cost (gross)"
+          value={money(k.payrollCost.gross)}
+          hint={k.payrollCost.month || "No payroll yet"}
+        />
         <KpiCard label="Payroll cost (net)" value={money(k.payrollCost.net)} />
-        <KpiCard label="Average gross salary" value={money(k.averageGrossSalary)} />
+        <KpiCard
+          label="Average gross salary"
+          value={money(k.averageGrossSalary)}
+        />
       </div>
 
       <div className="charts">
@@ -263,19 +308,30 @@ function AdminView({ data }) {
       <h3>Average gross salary by department</h3>
       <Table
         columns={[
-          { key: 'department', label: 'Department' },
-          { key: 'avg_gross', label: 'Average gross', render: (r) => money(r.avg_gross) },
+          { key: "department", label: "Department" },
+          {
+            key: "avg_gross",
+            label: "Average gross",
+            render: (r) => money(r.avg_gross),
+          },
         ]}
-        rows={data.averageGrossByDepartment.map((r) => ({ ...r, id: r.department }))}
+        rows={data.averageGrossByDepartment.map((r) => ({
+          ...r,
+          id: r.department,
+        }))}
       />
 
       <h3 style={{ marginTop: 20 }}>Recent activity</h3>
       <Table
         columns={[
-          { key: 'created_at', label: 'When', render: (r) => new Date(r.created_at).toLocaleString() },
-          { key: 'actor', label: 'Actor', render: (r) => r.actor || '-' },
-          { key: 'action', label: 'Action' },
-          { key: 'entity', label: 'Entity' },
+          {
+            key: "created_at",
+            label: "When",
+            render: (r) => new Date(r.created_at).toLocaleString(),
+          },
+          { key: "actor", label: "Actor", render: (r) => r.actor || "-" },
+          { key: "action", label: "Action" },
+          { key: "entity", label: "Entity" },
         ]}
         rows={data.auditFeed}
         empty="No activity yet"
@@ -298,15 +354,18 @@ function monthTotals(rows) {
 function EmployeeDashboard() {
   const [data, setData] = useState(null);
   const [today, setToday] = useState(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const load = useCallback(async () => {
     try {
-      const [d, t] = await Promise.all([api.get('/dashboard/employee'), api.get('/attendance/today')]);
+      const [d, t] = await Promise.all([
+        api.get("/dashboard/employee"),
+        api.get("/attendance/today"),
+      ]);
       setData(d.data);
       setToday(t.data);
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to load dashboard');
+      setError(err.response?.data?.error || "Failed to load dashboard");
     }
   }, []);
 
@@ -315,16 +374,16 @@ function EmployeeDashboard() {
   }, [load]);
 
   const act = async (path) => {
-    setError('');
+    setError("");
     try {
       await api.post(`/attendance/${path}`);
       load();
     } catch (err) {
-      setError(err.response?.data?.error || 'Action failed');
+      setError(err.response?.data?.error || "Action failed");
     }
   };
 
-  if (!data) return <p>{error || 'Loading...'}</p>;
+  if (!data) return <p>{error || "Loading..."}</p>;
 
   return (
     <div>
@@ -333,23 +392,40 @@ function EmployeeDashboard() {
 
       <div className="panel">
         <h3>Check-in</h3>
-        <p>Today: <b>{today ? today.status : 'Not checked in'}</b></p>
+        <p>
+          Today: <b>{today ? today.status : "Not checked in"}</b>
+        </p>
         <div className="row">
-          <button disabled={!!today} onClick={() => act('check-in')}>Check in</button>
-          <button className="secondary" disabled={!today || !!today.check_out} onClick={() => act('check-out')}>Check out</button>
+          <button disabled={!!today} onClick={() => act("check-in")}>
+            Check in
+          </button>
+          <button
+            className="secondary"
+            disabled={!today || !!today.check_out}
+            onClick={() => act("check-out")}
+          >
+            Check out
+          </button>
         </div>
       </div>
 
       <div className="kpis">
-        <KpiCard label="Hours this week" value={`${data.hoursThisWeek} / ${data.weeklyTarget}`} />
+        <KpiCard
+          label="Hours this week"
+          value={`${data.hoursThisWeek} / ${data.weeklyTarget}`}
+        />
         <KpiCard label="Late count (month)" value={data.lateCountThisMonth} />
         {data.leaveBalance.map((b) => (
-          <KpiCard key={b.leave_type_id} label={`${b.name} leave left`} value={b.remaining ?? 'Unlimited'} />
+          <KpiCard
+            key={b.leave_type_id}
+            label={`${b.name} leave left`}
+            value={b.remaining ?? "Unlimited"}
+          />
         ))}
         <KpiCard
           label="Last payslip"
-          value={data.lastPayslip ? money(data.lastPayslip.net) : '-'}
-          hint={data.lastPayslip?.month || 'None yet'}
+          value={data.lastPayslip ? money(data.lastPayslip.net) : "-"}
+          hint={data.lastPayslip?.month || "None yet"}
         />
       </div>
 

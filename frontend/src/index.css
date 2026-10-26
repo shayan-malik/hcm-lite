@@ -24,7 +24,7 @@ pre { background: #fff; padding: 16px; border-radius: 8px; overflow: auto; }
 .table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; }
 .table th, .table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #e5e7eb; font-size: 14px; }
 .table th { background: #eef2f7; }
-.row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; align-items: center; }
 .panel { background: #fff; padding: 16px; border-radius: 8px; margin-bottom: 20px; }
 .panel h3 { margin-top: 0; }
 .success { color: #059669; font-size: 14px; margin: 0; }
