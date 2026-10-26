@@ -3,7 +3,7 @@
 AI-assisted Human Capital Management system for Admin, HR and Employees (Saylani Hackathon, 24 Oct 2026).
 
 - Live app: https://hcm-lite-j1rp.vercel.app/
-- API: https://hcm-lite-six-xi.vercel.app//api
+- API: https://hcm-lite-six-xi.vercel.app/api
 - Repository: https://github.com/shayan-malik/hcm-lite
 
 ## Stack
