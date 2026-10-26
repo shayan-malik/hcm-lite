@@ -130,12 +130,12 @@ export const getLeaveAnalytics = async ({ to, departmentId }) => {
   );
 
   const heads = await pool.query(
-    `SELECT COALESCE(d.name, 'Unassigned') AS department, COUNT(*)::int AS n
-     FROM employees e LEFT JOIN departments d ON d.id = e.department_id
-     WHERE e.status IN ('active','probation') ${dept}
-     GROUP BY d.name`,
-    departmentId ? [departmentId] : []
-  );
+  `SELECT COALESCE(d.name, 'Unassigned') AS department, COUNT(*)::int AS n
+   FROM employees e LEFT JOIN departments d ON d.id = e.department_id
+   WHERE e.status IN ('active','probation') ${departmentId ? 'AND e.department_id = $1' : ''}
+   GROUP BY d.name`,
+  departmentId ? [departmentId] : []
+);
   const headMap = new Map(heads.rows.map((h) => [h.department, h.n]));
 
   const byType = {};
