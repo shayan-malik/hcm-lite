@@ -1,7 +1,7 @@
 // Calls any OpenAI-compatible chat API. The key stays on the server.
 export const callLLM = async ({ messages, tools, json = false }) => {
   const body = {
-    model: process.env.AI_MODEL || 'llama-3.3-70b-versatile',
+    model: process.env.AI_MODEL || 'openai/gpt-oss-20b',
     messages,
     temperature: 0.2,
   };
