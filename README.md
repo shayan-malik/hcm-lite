@@ -32,6 +32,7 @@ AI-assisted Human Capital Management system for Admin, HR and Employees (Saylani
 4. Open http://localhost:5173
 
 ## First run (create the first Admin)
+Alternatively set ADMIN_EMAIL, ADMIN_PASSWORD (and optionally COMPANY_NAME) in the backend environment. On start, if the system is empty, the first Admin is created automatically. Otherwise use the Setup page.
 The system starts empty. Opening the app shows the Setup page: enter the company name and the Admin
 email and password. Then:
 1. Admin sets office hours, office location and radius, departments, designations, holidays, and creates an HR login.

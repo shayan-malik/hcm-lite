@@ -13,6 +13,7 @@ import dashboardRoutes from './routes/dashboard.js';
 import commsRoutes from './routes/comms.js';
 import aiRoutes from './routes/ai.js';
 import employeeCsvRoutes from './routes/employeeCsv.js';
+import { seedAdminFromEnv } from './utils/seedAdmin.js';
 
 
 const app = express();
@@ -39,6 +40,7 @@ app.use('/api/comms', commsRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/employees', employeeCsvRoutes);   // pehle ye
 app.use('/api/employees', employeeRoutes);
+seedAdminFromEnv();
 
 const PORT = process.env.PORT || 5000;
 
