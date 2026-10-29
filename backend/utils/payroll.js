@@ -68,6 +68,8 @@ export const buildPayroll = async (month) => {
     const own = statuses.filter((s) => s.employee_id === emp.id);
     const absentDays = own.filter((s) => s.status === 'absent').length;
     const halfDays = own.filter((s) => s.status === 'half_day').length;
+    const lateDays = own.filter((s) => s.status === 'late').length;
+    const latePenaltyDays = Math.floor(lateDays / 3) * 0.5;
 
     let unpaidDays = 0;
     for (const leave of unpaidLeaves.filter((l) => l.employee_id === emp.id)) {
@@ -87,8 +89,7 @@ export const buildPayroll = async (month) => {
     const unpaidDeduction = perDay * unpaidDays;
     const halfDayDeduction = perDay * 0.5 * halfDays;
     const latePenaltyDeduction = perDay * latePenaltyDays;
-    const lateDays = own.filter((s) => s.status === 'late').length;
-    const latePenaltyDays = Math.floor(lateDays / 3) * 0.5;
+
 
     const deductions = Math.min(
       gross,
