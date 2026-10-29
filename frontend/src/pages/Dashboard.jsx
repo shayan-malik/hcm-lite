@@ -56,6 +56,7 @@ function StaffDashboard({ role }) {
   const [error, setError] = useState("");
   const [summary, setSummary] = useState("");
   const [summarizing, setSummarizing] = useState(false);
+  const [risk, setRisk] = useState([]);
 
   const load = useCallback(async () => {
     try {
@@ -91,6 +92,20 @@ function StaffDashboard({ role }) {
     };
     loadExtra();
   }, []);
+
+  useEffect(() => {
+    const loadRisk = async () => {
+      try {
+        const { data } = await api.get("/dashboard/risk", {
+          params: { department_id: filters.department_id || undefined },
+        });
+        setRisk(data);
+      } catch {
+        setRisk([]);
+      }
+    };
+    loadRisk();
+  }, [filters.department_id]);
 
   if (!data) return <p>{error || "Loading..."}</p>;
 
@@ -142,6 +157,18 @@ function StaffDashboard({ role }) {
       {summary && <div className="summary-box">{summary}</div>}
 
       {role === "hr" ? <HrView data={data} /> : <AdminView data={data} />}
+      <h3 style={{ marginTop: 20 }}>Attrition risk</h3>
+      <Table
+        columns={[
+          { key: "full_name", label: "Employee" },
+          { key: "department", label: "Department" },
+          { key: "score", label: "Score" },
+          { key: "level", label: "Level" },
+          { key: "reasons", label: "Why" },
+        ]}
+        rows={risk.map((r) => ({ ...r, id: r.employee_id }))}
+        empty="No active employees"
+      />
       <Announcements items={announcements} />
     </div>
   );

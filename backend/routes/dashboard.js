@@ -6,6 +6,7 @@ import {
   getAdminDashboard,
   getEmployeeDashboard,
 } from '../utils/analytics.js';
+import { getAttritionRisk } from '../utils/risk.js';
 
 const router = Router();
 router.use(authenticate);
@@ -32,6 +33,16 @@ router.get('/admin', authorize('admin'), async (req, res) => {
 router.get('/employee', authorize('employee'), async (req, res) => {
   try {
     res.json(await getEmployeeDashboard(req.user.employeeId));
+  } catch (err) {
+    fail(res, err);
+  }
+});
+
+
+router.get('/risk', authorize('admin', 'hr'), async (req, res) => {
+  try {
+    const departmentId = req.query.department_id ? Number(req.query.department_id) : null;
+    res.json(await getAttritionRisk(departmentId));
   } catch (err) {
     fail(res, err);
   }
