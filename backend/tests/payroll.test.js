@@ -32,3 +32,10 @@ test('gross is 1.5 x basic', () => {
   assert.equal(basic * 1.5, 150000);
   assert.equal(calculateMonthlyTax(basic * 1.5), 10000);
 });
+
+test('late penalty: every 3 lates cost half a day', () => {
+  const penalty = (lates) => Math.floor(lates / 3) * 0.5;
+  assert.equal(penalty(2), 0);
+  assert.equal(penalty(3), 0.5);
+  assert.equal(penalty(7), 1);
+});

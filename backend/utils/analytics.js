@@ -89,6 +89,29 @@ export const getAttendanceAnalytics = async (filters) => {
     }
   }
 
+  const absentByEmp = {};
+for (const r of rows) {
+  if (r.status === 'absent') absentByEmp[r.employee_id] = (absentByEmp[r.employee_id] || 0) + 1;
+}
+
+const anomalies = emps
+  .map((e) => ({
+    employee_id: e.id,
+    full_name: e.full_name,
+    department: e.department,
+    absentDays: absentByEmp[e.id] || 0,
+    lateDays: lateByEmp[e.id] || 0,
+  }))
+  .filter((a) => a.absentDays >= 3 || a.lateDays >= 5)
+  .map((a) => ({
+    ...a,
+    reason: [
+      a.absentDays >= 3 ? `${a.absentDays} absent days` : null,
+      a.lateDays >= 5 ? `${a.lateDays} late days` : null,
+    ].filter(Boolean).join(', '),
+  }))
+  .sort((a, b) => b.absentDays + b.lateDays - (a.absentDays + a.lateDays));
+
   return {
     summary: computeRates(total),
     byDepartment: Object.entries(byDept).map(([department, c]) => ({ department, ...computeRates(c) })),
@@ -104,6 +127,7 @@ export const getAttendanceAnalytics = async (filters) => {
       }))
       .sort((a, b) => b.lates - a.lates)
       .slice(0, 5),
+      anomalies
   };
 };
 

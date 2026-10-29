@@ -224,6 +224,7 @@ router.get('/payslips/:id/pdf', async (req, res) => {
     doc.text(`Absent days: ${d.absentDays} (-${money(d.absentDeduction)})`);
     doc.text(`Unpaid leave days: ${d.unpaidDays} (-${money(d.unpaidDeduction)})`);
     doc.text(`Half days: ${d.halfDays} (-${money(d.halfDayDeduction)})`);
+    doc.text(`Late days: ${d.lateDays || 0} (penalty ${d.latePenaltyDays || 0} day: -${money(d.latePenaltyDeduction || 0)})`);
     doc.text(`Joining/leaving proration: -${money(d.prorationDeduction)}`);
     doc.text(`Total deductions: ${money(slip.deductions)}`);
     doc.text(`Income tax: ${money(slip.tax)}`);

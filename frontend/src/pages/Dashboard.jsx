@@ -211,6 +211,18 @@ function HrView({ data }) {
       </div>
 
       <h3>Top 5 late-comers</h3>
+      <h3 style={{ marginTop: 20 }}>Attendance flags</h3>
+      <Table
+        columns={[
+          { key: "full_name", label: "Employee" },
+          { key: "department", label: "Department" },
+          { key: "absentDays", label: "Absent days" },
+          { key: "lateDays", label: "Late days" },
+          { key: "reason", label: "Why flagged" },
+        ]}
+        rows={(att.anomalies || []).map((r) => ({ ...r, id: r.employee_id }))}
+        empty="No unusual attendance in this range"
+      />
       <Table
         columns={[
           { key: "full_name", label: "Employee" },

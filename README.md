@@ -57,11 +57,11 @@ Modules M1 to M9: auth and roles, organization setup, employees (search, filters
 (check-in/out, status rules, corrections), leave (working days, overlap and balance checks, approval),
 payroll (rules, tax slab, finalize, PDF payslip), dashboards with filters, AI assistant, announcements,
 notifications, audit log.
+Unit tests for payroll tax slabs (npm test)
 
 ## Not done
 - CSV import/export with dry run
 - Camera + location attendance, mobile app
-- Automated tests
 - Attrition risk score, dark mode, other bonus items
 
 ## Database notes

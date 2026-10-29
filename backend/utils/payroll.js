@@ -86,10 +86,13 @@ export const buildPayroll = async (month) => {
     const absentDeduction = perDay * absentDays;
     const unpaidDeduction = perDay * unpaidDays;
     const halfDayDeduction = perDay * 0.5 * halfDays;
+    const latePenaltyDeduction = perDay * latePenaltyDays;
+    const lateDays = own.filter((s) => s.status === 'late').length;
+    const latePenaltyDays = Math.floor(lateDays / 3) * 0.5;
 
     const deductions = Math.min(
       gross,
-      prorationDeduction + absentDeduction + unpaidDeduction + halfDayDeduction
+      prorationDeduction + absentDeduction + unpaidDeduction + halfDayDeduction + latePenaltyDeduction
     );
     const tax = calculateMonthlyTax(gross);
     const net = Math.max(0, gross - deductions - tax);
@@ -110,6 +113,9 @@ export const buildPayroll = async (month) => {
         absentDays,
         unpaidDays,
         halfDays,
+        lateDays,
+        latePenaltyDays,
+        latePenaltyDeduction: round(latePenaltyDeduction),
         prorationDeduction: round(prorationDeduction),
         absentDeduction: round(absentDeduction),
         unpaidDeduction: round(unpaidDeduction),
