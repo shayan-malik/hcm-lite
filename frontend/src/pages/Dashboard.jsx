@@ -18,6 +18,7 @@ import api from "../api";
 import { useAuth } from "../authContextValue";
 import KpiCard from "../components/KpiCard";
 import Table from "../components/Table";
+import CameraCheckIn from '../components/CameraCheckIn';
 
 const COLORS = ["#0f9d8a", "#5b4fcf", "#f59e0b", "#dc2626", "#0ea5e9"];
 const money = (n) =>
@@ -445,6 +446,7 @@ function EmployeeDashboard() {
           >
             Check out
           </button>
+          {!today && <CameraCheckIn onDone={load} />}
         </div>
       </div>
 

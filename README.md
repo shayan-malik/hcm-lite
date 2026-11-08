@@ -58,11 +58,12 @@ Modules M1 to M9: auth and roles, organization setup, employees (search, filters
 payroll (rules, tax slab, finalize, PDF payslip), dashboards with filters, AI assistant, announcements,
 notifications, audit log.
 Unit tests for payroll tax slabs (npm test)
+Attrition risk score (rule-based, with reasons), late penalty, attendance anomaly flags, CSV import/export with dry run, env Admin seeding, unit tests.
 
 ## Not done
 - CSV import/export with dry run
 - Camera + location attendance, mobile app
-- Attrition risk score, dark mode, other bonus items
+- Dark mode, other bonus items
 
 ## Database notes
 Besides `schema.sql`, these were applied:

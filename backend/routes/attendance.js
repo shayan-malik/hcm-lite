@@ -3,6 +3,7 @@ import pool from '../db.js';
 import { authenticate, authorize } from '../middleware/auth.js';
 import { logAudit } from '../utils/audit.js';
 import { TZ, getToday, getStatuses } from '../utils/attendance.js';
+import { distanceMeters } from '../utils/geo.js';
 
 const router = Router();
 router.use(authenticate);
@@ -16,6 +17,55 @@ const requireEmployeeId = (req, res, next) => {
   }
   next();
 };
+
+
+// ---------- Camera check-in: face result + GPS, server decides ----------
+router.post('/camera-check-in', authorize('employee'), requireEmployeeId, async (req, res) => {
+  try {
+    const { faces, lat, lng, accuracy } = req.body;
+
+    if (Number(faces) !== 1) {
+      return res.status(422).json({
+        error: Number(faces) === 0 ? 'No face detected' : 'More than one face detected',
+      });
+    }
+    if (![lat, lng, accuracy].every((v) => typeof v === 'number' && Number.isFinite(v))) {
+      return res.status(400).json({ error: 'lat, lng and accuracy are required' });
+    }
+    if (accuracy > 100) {
+      return res.status(422).json({ error: `GPS accuracy is too low (${Math.round(accuracy)} m, need 100 m or better)` });
+    }
+
+    const office = (await pool.query('SELECT office_lat, office_lng, radius_m FROM settings WHERE id = 1')).rows[0];
+    if (!office) return res.status(400).json({ error: 'Company setup is not complete' });
+    if (office.office_lat === null || office.office_lng === null) {
+      return res.status(400).json({ error: 'Admin has not set the office location yet' });
+    }
+
+    const distance = distanceMeters(lat, lng, Number(office.office_lat), Number(office.office_lng));
+    if (distance > office.radius_m) {
+      return res.status(422).json({
+        error: `You are outside the office area (${Math.round(distance)} m away, allowed ${office.radius_m} m)`,
+      });
+    }
+
+    const result = await pool.query(
+      `INSERT INTO attendance (employee_id, date, check_in, status, source)
+       SELECT $1, (NOW() AT TIME ZONE $2)::date, NOW(),
+         CASE WHEN (NOW() AT TIME ZONE $2)::time > s.office_start + (s.grace_minutes * INTERVAL '1 minute')
+              THEN 'late' ELSE 'present' END,
+         'camera'
+       FROM settings s WHERE s.id = 1
+       RETURNING *`,
+      [req.user.employeeId, TZ]
+    );
+
+    res.status(201).json({ ...result.rows[0], distance_m: Math.round(distance) });
+  } catch (err) {
+    if (err.code === '23505') return res.status(409).json({ error: 'You have already checked in today' });
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // ---------- Check in (server stamps the time) ----------
 router.post('/check-in', authorize('employee', 'hr'), requireEmployeeId, async (req, res) => {
