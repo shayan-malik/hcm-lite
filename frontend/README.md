@@ -1,16 +1,47 @@
-# React + Vite
+# HCM Lite: Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React (Vite) web app for HCM Lite. It talks to the backend only through the REST API and never calls the AI provider directly.
 
-Currently, two official plugins are available:
+## Stack
+React, React Router, Axios, Recharts, MediaPipe (face detection), vite-plugin-pwa
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Run
+```
+cp .env.example .env     # set VITE_API_URL
+npm install
+npm run dev              # http://localhost:5173
+```
 
-## React Compiler
+Build and preview (needed to test the PWA):
+```
+npm run build
+npm run preview
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Environment
+| Name | Example |
+|---|---|
+| `VITE_API_URL` | `http://localhost:5000/api` (local) or `https://<backend>.vercel.app/api` (hosted) |
 
-## Expanding the ESLint configuration
+Vite reads this at build time, so on Vercel set it before deploying and redeploy after changing it.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Structure
+```
+src/
+  api.js                 Axios instance, adds the JWT token to every request
+  authContextValue.js    Auth context and useAuth hook
+  AuthContext.jsx        Auth provider (login, logout, password change)
+  menu.js                Role-based menu (Admin, HR, Employee)
+  App.jsx                Routes and role-based page selection
+  components/            Layout, Table, KpiCard, CsvImport, CameraCheckIn
+  pages/                 Setup, Login, Dashboard, Employees, Attendance, Leave,
+                         Payroll, Payslips, Profile, Organization, Users,
+                         Announcements, Notifications, AuditLog, Assistant
+  utils/download.js      PDF and CSV downloads with the auth token
+```
+
+## Notes
+- Hiding a menu item is only for the UI. Every permission is checked again on the server.
+- Camera and location need HTTPS (or localhost). Phones give better GPS accuracy than laptops.
+- Dark mode choice is saved in the browser. The app is installable as a PWA.
+- `vercel.json` rewrites all routes to `index.html` so page refresh works with React Router.
