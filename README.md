@@ -60,6 +60,7 @@ notifications, audit log.
 Unit tests for payroll tax slabs (npm test)
 Attrition risk score (rule-based, with reasons), late penalty, attendance anomaly flags, CSV import/export with dry run, env Admin seeding, unit tests.
 Camera attendance (face detection with MediaPipe, GPS accuracy check, server-side Haversine geofence).
+CSV, env admin seed, tests, late penalty, anomaly flags, attrition risk, camera attendance, dark mode.
 
 ## Not done
 - mobile app

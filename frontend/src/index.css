@@ -39,11 +39,7 @@ button { padding: 10px 14px; border: 0; border-radius: 6px; background: #0f9d8a;
 button:disabled { opacity: .6; cursor: not-allowed; }
 .error { color: #dc2626; font-size: 14px; margin: 0; }
 pre { background: var(--surface); padding: 16px; border-radius: 8px; overflow: auto; }
-@media (max-width: 700px) {
-  .app { flex-direction: column; }
-  .sidebar { width: 100%; }
-  .sidebar nav { flex-direction: row; flex-wrap: wrap; }
-}
+
 
 .table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: 8px; overflow: hidden; }
 .table th, .table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 14px; }
@@ -79,3 +75,46 @@ pre { background: var(--surface); padding: 16px; border-radius: 8px; overflow: a
 
 input, select, textarea { background: var(--surface); color: var(--text); }
 .theme-toggle { background: transparent; border: 1px solid #475569; color: #cbd5e1; }
+
+.sidebar-top { display: flex; align-items: center; justify-content: space-between; }
+.sidebar-body { display: flex; flex-direction: column; flex: 1; }
+.menu-btn { display: none; background: transparent; border: 1px solid #475569; font-size: 18px; padding: 4px 10px; }
+
+@media (max-width: 700px) {
+  .app { flex-direction: column; }
+  .sidebar { width: 100%; padding: 10px 14px; position: sticky; top: 0; z-index: 50; }
+  .sidebar h2 { margin: 0; font-size: 18px; }
+  .menu-btn { display: block; }
+  .menu-btn { transition: background .3s; }
+  .menu-btn:active { background: #2f3e63; }
+  .sidebar-body {
+  display: flex;
+  position: absolute; top: 100%; left: 0; right: 0;
+  background: #1f2a44;
+  padding: 12px 14px 16px;
+  margin-top: 0;
+  max-height: calc(100vh - 56px);
+  overflow-y: auto;
+  box-shadow: 0 8px 20px rgba(0,0,0,.35);
+  opacity: 0;
+  transform: translateY(-10px);
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .2s ease, transform .3s ease, visibility .2s;
+  
+}
+.sidebar-body.open {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  pointer-events: auto;
+}
+  .sidebar nav { flex-direction: column; flex: none; margin-bottom: 12px; }
+  .content { padding: 14px; }
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  .chart-box { min-width: 0; }
+  .charts { grid-template-columns: 1fr; }
+}
+
+.content { min-width: 0; }
+.table { display: block; overflow-x: auto; white-space: nowrap; }

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 export default function Layout() {
   const { user, logout } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
   const [theme, setTheme] = useState(() => {
     try {
       return localStorage.getItem("theme") || "light";
@@ -25,24 +26,41 @@ export default function Layout() {
   return (
     <div className="app">
       <aside className="sidebar">
-        <h2>HCM Lite</h2>
-        <nav>
-          {menus[user.role].map((item) => (
-            <NavLink key={item.path} to={item.path} end={item.path === "/"}>
-              {item.label}
-            </NavLink>
-          ))}
-        </nav>
-        <div className="sidebar-footer">
-          <small>{user.email}</small>
-          <small>Role: {user.role}</small>
+        <div className="sidebar-top">
+          <h2>HCM Lite</h2>
           <button
-            className="theme-toggle"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="menu-btn"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Menu"
           >
-            {theme === "dark" ? "Light mode" : "Dark mode"}
+            {menuOpen ? "✕" : "☰"}
           </button>
-          <button onClick={logout}>Logout</button>
+        </div>
+
+        <div className={`sidebar-body ${menuOpen ? "open" : ""}`}>
+          <nav>
+            {menus[user.role].map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                end={item.path === "/"}
+                onClick={() => setMenuOpen(false)}
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
+          <div className="sidebar-footer">
+            <small>{user.email}</small>
+            <small>Role: {user.role}</small>
+            <button
+              className="theme-toggle"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            >
+              {theme === "dark" ? "Light mode" : "Dark mode"}
+            </button>
+            <button onClick={logout}>Logout</button>
+          </div>
         </div>
       </aside>
       <main className="content">
