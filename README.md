@@ -59,10 +59,10 @@ payroll (rules, tax slab, finalize, PDF payslip), dashboards with filters, AI as
 notifications, audit log.
 Unit tests for payroll tax slabs (npm test)
 Attrition risk score (rule-based, with reasons), late penalty, attendance anomaly flags, CSV import/export with dry run, env Admin seeding, unit tests.
+Camera attendance (face detection with MediaPipe, GPS accuracy check, server-side Haversine geofence).
 
 ## Not done
-- CSV import/export with dry run
-- Camera + location attendance, mobile app
+- mobile app
 - Dark mode, other bonus items
 
 ## Database notes
